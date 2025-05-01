@@ -1,8 +1,6 @@
-// backend/test/stateSerialization.test.ts
-
 import { Flashcard, BucketMap, AnswerDifficulty } from '../src/logic/flashcards';
 import { PracticeRecord } from '../src/types/index';
-import fs from 'fs/promises'; // Import the actual module type for casting mocks
+import fs from 'fs/promises';
 
 import {
   serializeState,
