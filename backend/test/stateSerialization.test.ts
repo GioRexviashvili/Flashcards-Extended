@@ -70,7 +70,7 @@ describe('State Serialization/Deserialization Logic', () => {
         const day = 5;
 
         const serializedCard1: SerializedFlashcard = { front: 'Q1', back: 'A1', hint: 'H1', tags: ['tag1'] };
-        const serializedCard2: SerializedFlashcard = { front: 'Q2', back: 'A2', hint: undefined, tags: ['tag2', 'tag1'] };
+        const serializedCard2: SerializedFlashcard = { front: 'Q2', back: 'A2', hint: 'H2', tags: ['tag2', 'tag1'] };
         const serializedCard3: SerializedFlashcard = { front: 'Q3', back: 'A3', hint: 'H3', tags: [] };
 
         const expected: SerializedState = {
