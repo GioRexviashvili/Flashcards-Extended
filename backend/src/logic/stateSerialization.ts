@@ -5,7 +5,6 @@ import path from 'path';
 
 
 export const STATE_FILE_PATH = path.resolve(__dirname, '../../flashcard_state.json'); // Place it relative to dist/logic after build
-console.log(`State file path configured to: ${STATE_FILE_PATH}`); // Log path on startup
 
 /**
  * Saves the application's serialized state to a JSON file.
@@ -18,9 +17,7 @@ export async function saveStateToFile(filePath: string, state: SerializedState):
   try {
     const jsonString = JSON.stringify(state, null, 2); // Pretty-print for readability
     await fs.writeFile(filePath, jsonString, 'utf-8');
-    console.log(`Application state successfully saved to ${filePath}`);
   } catch (error: any) {
-    console.error(`Error saving state to ${filePath}:`, error);
     // Re-throw the error so the caller knows saving failed
     throw error;
   }
@@ -38,20 +35,16 @@ export async function loadStateFromFile(filePath: string): Promise<SerializedSta
     const fileContentBuffer = await fs.readFile(filePath, 'utf-8');
     const fileContentString = fileContentBuffer.toString(); // Ensure it's a string if readFile didn't specify encoding already
     const parsedState: SerializedState = JSON.parse(fileContentString);
-    console.log(`Application state successfully loaded from ${filePath}`);
     return parsedState;
   } catch (error: any) {
     // Specific check for "File Not Found" error
     if (error.code === 'ENOENT') {
-      console.log(`State file ${filePath} not found. Starting with initial state.`);
       return null; // Return null specifically for ENOENT
     } else if (error instanceof SyntaxError) {
-        console.error(`Error parsing state file ${filePath} as JSON:`, error);
-        throw new Error(`Failed to parse state file ${filePath}: Corrupted JSON.`); // Throw specific parsing error
+        throw new Error("Failed to parse state file ${filePath}: Corrupted JSON."); // Throw specific parsing error
     }
      else {
       // Log and re-throw other errors (permissions, disk errors, etc.)
-      console.error(`Error loading state from ${filePath}:`, error);
       throw error;
     }
   }
@@ -94,8 +87,29 @@ export function serializeState(
   history: PracticeRecord[],
   day: number
 ): SerializedState {
-  // Implementation needed
-  throw new Error('serializeState not implemented');
+  // Create the buckets object for the serialized state
+  const serializedBuckets: Record<string, SerializedFlashcard[]> = {};
+
+  // Loop through each bucket in the Map
+  buckets.forEach((flashcards, bucketNumber) => {
+    // Convert the Set of Flashcards to an array of SerializedFlashcard objects
+    const serializedFlashcardArray: SerializedFlashcard[] = Array.from(flashcards).map(card => ({
+      front: card.front,
+      back: card.back,
+      hint: card.hint || undefined, // Include hint only if it exists and is not empty
+      tags: [...card.tags] // Convert ReadonlyArray to regular array for serialization
+    }));
+
+    // Add the array to the serialized buckets object with the bucket number as a string key
+    serializedBuckets[bucketNumber.toString()] = serializedFlashcardArray;
+  });
+
+  // Return the complete serialized state
+  return {
+    buckets: serializedBuckets,
+    history: history, // History records are already in a serializable format
+    day: day
+  };
 }
 
 /**
@@ -110,6 +124,72 @@ export function deserializeState(data: SerializedState): {
   history: PracticeRecord[];
   day: number;
 } {
-  // Implementation needed
-  throw new Error('deserializeState not implemented');
+  // Validate the overall structure of the serialized data
+  if (!data || typeof data !== 'object' || data === null) {
+    throw new Error('Invalid serialized state format: top-level data must be an object');
+  }
+
+  if (!data.buckets || typeof data.buckets !== 'object' || Array.isArray(data.buckets)) {
+    throw new Error('Invalid serialized state format: buckets must be an object');
+  }
+
+  if (!Array.isArray(data.history)) {
+    throw new Error('Invalid serialized state format: history must be an array');
+  }
+
+  if (typeof data.day !== 'number') {
+    throw new Error('Invalid serialized state format: day must be a number');
+  }
+
+  // Create a new Map to hold the deserialized buckets
+  const buckets: BucketMap = new Map();
+
+  // Process each bucket in the serialized data
+  for (const [bucketKey, serializedFlashcards] of Object.entries(data.buckets)) {
+    // Validate the bucket key format (must be a numeric string)
+    const bucketNumber = Number(bucketKey);
+    if (isNaN(bucketNumber) || bucketNumber.toString() !== bucketKey) {
+      throw new Error("Invalid format for bucket key: ${bucketKey} is not a valid number string");
+    }
+
+    // Validate the serialized flashcards array
+    if (!Array.isArray(serializedFlashcards)) {
+      throw new Error("Invalid format for bucket key: ${bucketKey} value must be an array");
+    }
+
+    // Create a new Set to hold the flashcards for this bucket
+    const flashcardSet: Set<Flashcard> = new Set();
+
+    // Process each serialized flashcard in the array
+    for (const cardData of serializedFlashcards) {
+      // Validate the card data
+      if (!cardData || 
+          typeof cardData !== 'object' || 
+          typeof cardData.front !== 'string' || 
+          typeof cardData.back !== 'string') {
+        throw new Error("Invalid card data in bucket ${bucketKey}: ${JSON.stringify(cardData)}");
+      }
+
+      // Create a new Flashcard instance from the serialized data
+      const card = new Flashcard(
+        cardData.front,
+        cardData.back,
+        cardData.hint || '', // Use empty string as default if hint is undefined
+        Array.isArray(cardData.tags) ? [...cardData.tags] : [] // Ensure tags is an array
+      );
+
+      // Add the card to the set for this bucket
+      flashcardSet.add(card);
+    }
+
+    // Add the flashcard set to the bucket map with the numeric bucket key
+    buckets.set(bucketNumber, flashcardSet);
+  }
+
+  // Return the complete deserialized state
+  return {
+    buckets,
+    history: data.history, // History records are already in the correct format
+    day: data.day
+  };
 }
