@@ -175,19 +175,24 @@ export function incrementDay(): void {
 // These functions make common tasks easier when interacting with the state.
 
 /**
- * finds and returns Flashcard with corresponding front and back.
+ * Finds and returns a Flashcard with the corresponding front and back
+ * by searching through all cards in all current buckets.
  *
  * @param front string which indicates first side of the card
  * @param back string which indicates second side of the card
- * @returns Flashcard if there exist such flashcard with these front and back
- * @returns undefined if there does not exist such flashcard
+ * @returns Flashcard if there exists such flashcard with these front and back,
+ *          otherwise undefined.
  */
 export function findCard(front: string, back: string): Flashcard | undefined {
-  for (let i = 0; i < initialCards.length; i++) {
-    if (initialCards[i].front == front && initialCards[i].back == back)
-      return initialCards[i];
+  // Iterate over each bucket in currentBuckets
+  for (const cardsInBucket of currentBuckets.values()) {
+    // Iterate over each card within that bucket's Set
+    for (const card of cardsInBucket) {
+      if (card.front === front && card.back === back) {
+        return card;
+      }
+    }
   }
-
   return undefined;
 }
 
