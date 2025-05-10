@@ -36,7 +36,7 @@ function PracticeView() {
   const [webcamError, setWebcamError] = useState<string | null>(null);
   const [isWebcamInitializing, setIsWebcamInitializing] = useState<boolean>(false);
   const videoRef = useRef<HTMLVideoElement>(null); // Ref for the video element
-  
+
   // --- Data Fetching Function ---
   const loadPracticeCards = async () => {
     console.log("PracticeView: Attempting to load practice cards...");
@@ -149,6 +149,53 @@ function PracticeView() {
       setLoadingHint(false);
     }
   };
+
+  // === Webcam Functions ===
+const startWebcam = async () => {
+  console.log("PracticeView: Attempting to start webcam...");
+  setIsWebcamInitializing(true);
+  setWebcamError(null);
+  setIsWebcamEnabled(false); // Ensure it's false until successfully started
+
+  if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+      setWebcamStream(stream);
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+      }
+      setIsWebcamEnabled(true);
+      console.log("PracticeView: Webcam started successfully.");
+    } catch (err: any) {
+      console.error("PracticeView: Error accessing webcam:", err);
+      let message = "Failed to access webcam.";
+      if (err.name === "NotAllowedError") {
+        message = "Webcam permission denied. Please allow access in your browser settings.";
+      } else if (err.name === "NotFoundError") {
+        message = "No webcam found. Please ensure a webcam is connected and enabled.";
+      }
+      setWebcamError(message);
+      setIsWebcamEnabled(false);
+    } finally {
+      setIsWebcamInitializing(false);
+    }
+  } else {
+    setWebcamError("Webcam access is not supported by your browser.");
+    setIsWebcamInitializing(false);
+    setIsWebcamEnabled(false);
+  }
+};
+
+const stopWebcam = () => {
+  if (webcamStream) {
+    webcamStream.getTracks().forEach(track => track.stop());
+    console.log("PracticeView: Webcam stopped.");
+  }
+  setWebcamStream(null);
+  setIsWebcamEnabled(false);
+  // Do not clear webcamError here, user might want to see why it failed
+  // Do not set isWebcamInitializing here
+};
 
   // --- Rendering Logic ---
 
