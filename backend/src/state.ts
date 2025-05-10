@@ -245,6 +245,17 @@ export function addCard(newCard: Flashcard): void {
 }
 
 
+/**
+ * Checks if a flashcard with the given front and back already exists in any bucket.
+ * @param front The front text of the card.
+ * @param back The back text of the card.
+ * @returns True if the card exists, false otherwise.
+ */
+export function doesCardExist(front: string, back: string): boolean {
+  return findCard(front, back) !== undefined;
+}
+
+
 // --- Confirmation Log ---
 // This runs once when the server starts and loads this file.
 // Useful for confirming that the initial state was set up.
