@@ -166,12 +166,12 @@ _(Crucial prerequisite: Ensure cards created by the extension are saved permanen
 
 - [ ] **Step 12: Webcam Access & UI Elements**
 
-  - [ ] Modify `frontend/src/components/PracticeView.tsx`.
-  - [ ] Add state variables:
-    - [ ] `isWebcamEnabled: boolean` (tracks if user wants webcam active)
-    - [ ] `webcamStream: MediaStream | null`
-    - [ ] `webcamError: string | null`
-    - [ ] `isWebcamInitializing: boolean`
+  - [X] Modify `frontend/src/components/PracticeView.tsx`.
+  - [X] Add state variables:
+    - [X] `isWebcamEnabled: boolean` (tracks if user wants webcam active)
+    - [X] `webcamStream: MediaStream | null`
+    - [X] `webcamError: string | null`
+    - [X] `isWebcamInitializing: boolean`
   - [ ] Add UI elements:
     - [ ] A button "Enable Webcam Gestures".
     - [ ] A `<video>` element (e.g., `#webcamFeed`, initially hidden or small preview). Ensure `muted`, `autoPlay`, `playsInline` attributes.

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 
 import type { Flashcard } from "../types";
@@ -30,6 +30,13 @@ function PracticeView() {
   const [loadingHint, setLoadingHint] = useState(false);
   const [hintError, setHintError] = useState<string | null>(null);
 
+  // === New state for Webcam Gestures ===
+  const [isWebcamEnabled, setIsWebcamEnabled] = useState<boolean>(false);
+  const [webcamStream, setWebcamStream] = useState<MediaStream | null>(null);
+  const [webcamError, setWebcamError] = useState<string | null>(null);
+  const [isWebcamInitializing, setIsWebcamInitializing] = useState<boolean>(false);
+  const videoRef = useRef<HTMLVideoElement>(null); // Ref for the video element
+  
   // --- Data Fetching Function ---
   const loadPracticeCards = async () => {
     console.log("PracticeView: Attempting to load practice cards...");
