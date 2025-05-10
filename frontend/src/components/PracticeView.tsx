@@ -315,8 +315,11 @@ function PracticeView() {
       {/* Action Buttons */}
       <div className="button-group">
         {!showBack ? (
+          // "Show Answer" button is always available if the answer isn't shown
           <button onClick={handleShowBack}>Show Answer</button>
-        ) : (
+        ) : // Answer is shown. Now decide whether to show difficulty buttons OR expect gestures.
+        !isWebcamEnabled ? (
+          // If webcam is NOT enabled, show the traditional difficulty buttons
           <>
             <button
               onClick={() => handleAnswer(AnswerDifficulty.Wrong)}
@@ -337,6 +340,10 @@ function PracticeView() {
               Easy
             </button>
           </>
+        ) : (
+          <p style={{ fontStyle: "italic", color: "var(--neutral-400)" }}>
+            Use hand gestures to answer (Thumb Up - Easy, Down - Hard, or Flat Hand - Wrong).
+          </p>
         )}
       </div>
 

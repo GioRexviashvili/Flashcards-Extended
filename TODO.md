@@ -172,19 +172,19 @@ _(Crucial prerequisite: Ensure cards created by the extension are saved permanen
     - [X] `webcamStream: MediaStream | null`
     - [X] `webcamError: string | null`
     - [X] `isWebcamInitializing: boolean`
-  - [ ] Add UI elements:
-    - [ ] A button "Enable Webcam Gestures".
-    - [ ] A `<video>` element (e.g., `#webcamFeed`, initially hidden or small preview). Ensure `muted`, `autoPlay`, `playsInline` attributes.
-    - [ ] Conditional UI for displaying errors (`webcamError`).
-    - [ ] Conditional UI for initialization (`isWebcamInitializing`).
+  - [X] Add UI elements:
+    - [X] A button "Enable Webcam Gestures".
+    - [X] A `<video>` element (e.g., `#webcamFeed`, initially hidden or small preview). Ensure `muted`, `autoPlay`, `playsInline` attributes.
+    - [X] Conditional UI for displaying errors (`webcamError`).
+    - [X] Conditional UI for initialization (`isWebcamInitializing`).
   - [X] Implement `startWebcam` async function:
     - [X] Set `isWebcamInitializing = true`, `webcamError = null`.
     - [X] Use `try...catch` around `navigator.mediaDevices.getUserMedia({ video: true })`.
     - [X] On success: Get the stream, set `webcamStream`, set video element's `srcObject`, set `isWebcamEnabled = true`.
     - [X] On error: Catch specific errors (e.g., `NotAllowedError`, `NotFoundError`), set `webcamError` state with user-friendly message.
     - [X] Finally: Set `isWebcamInitializing = false`.
-  - [ ] Wire the "Enable Webcam Gestures" button to call `startWebcam`.
-  - [ ] Add `useEffect` hook to cleanup (stop stream tracks) when component unmounts or `isWebcamEnabled` becomes false: `stream?.getTracks().forEach(track => track.stop());`.
+  - [X] Wire the "Enable Webcam Gestures" button to call `startWebcam`.
+  - [X] Add `useEffect` hook to cleanup (stop stream tracks) when component unmounts or `isWebcamEnabled` becomes false: `stream?.getTracks().forEach(track => track.stop());`.
 
 - [ ] **Step 13: Hand Pose Detection Library Setup**
 
