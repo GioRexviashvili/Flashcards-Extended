@@ -97,17 +97,17 @@ _(Crucial prerequisite: Ensure cards created by the extension are saved permanen
 
 - [ ] **Step 8: Basic Extension Structure & Manifest**
 
-  - [ ] Create `extension/` directory at the root of your project (alongside `backend/` and `frontend/`).
-  - [ ] Create `extension/manifest.json` (Manifest V3).
-  - [ ] Configure `manifest.json`:
-    - [ ] `manifest_version`: 3
-    - [ ] `name`: "Flashcard Quick Creator" (or similar)
-    - [ ] `version`: "1.0"
-    - [ ] `description`: "Select text on any page to create flashcards."
-    - [ ] `permissions`: [`contextMenus`, `storage`, `activeTab`, `scripting`] (add `notifications` later if needed).
-    - [ ] `host_permissions`: [`http://localhost:3001/*`] (for API calls).
-    - [ ] `background`: `{ "service_worker": "background.js" }`
-    - [ ] `action`: `{ "default_popup": "popup.html", "default_title": "Create Flashcard" }` (for the input form).
+  - [X] Create `extension/` directory at the root of your project (alongside `backend/` and `frontend/`).
+  - [X] Create `extension/manifest.json` (Manifest V3).
+  - [X] Configure `manifest.json`:
+    - [X] `manifest_version`: 3
+    - [X] `name`: "Flashcard Quick Creator" (or similar)
+    - [X] `version`: "1.0"
+    - [X] `description`: "Select text on any page to create flashcards."
+    - [X] `permissions`: [`contextMenus`, `storage`, `activeTab`, `scripting`] (add `notifications` later if needed).
+    - [X] `host_permissions`: [`http://localhost:3001/*`] (for API calls).
+    - [X] `background`: `{ "service_worker": "background.js" }`
+    - [X] `action`: `{ "default_popup": "popup.html", "default_title": "Create Flashcard" }` (for the input form).
 
 - [ ] **Step 9: Context Menu & Background Script**
 
