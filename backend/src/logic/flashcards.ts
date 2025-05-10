@@ -13,13 +13,13 @@ export class Flashcard {
   public readonly front: string;
   public readonly back: string;
   public readonly hint?: string; // weak hint - you will strengthen the spec for getHint()
-  public readonly tags: ReadonlyArray<string>;
+  public readonly tags?: ReadonlyArray<string>;
 
   constructor(
     front: string,
     back: string,
-    hint: string,
-    tags: ReadonlyArray<string>
+    hint: string = "",
+    tags: ReadonlyArray<string> = []
   ) {
     this.front = front;
     this.back = back;

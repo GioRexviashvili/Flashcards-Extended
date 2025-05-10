@@ -25,6 +25,8 @@ import {
   findCard,
   findCardBucket,
   isBucketMapEmpty,
+  addCard,
+  doesCardExist,
 } from "./state";
 
 // --- Type Imports ---
@@ -35,6 +37,7 @@ import type {
   HintRequest,
   ProgressStats,
   PracticeRecord,
+  CreateCardRequest,
 } from "./types";
 
 const app = express();
@@ -283,6 +286,62 @@ app.post("/api/day/next", (req: Request, res: Response) => {
       .json({ message: "Internal server error during day advancement." });
   }
 });
+
+
+/**
+ * POST /api/cards
+ * Creates a new flashcard and adds it to Bucket 0.
+ */
+app.post("/api/cards", (req: Request, res: Response) => {
+  console.log("POST /api/cards received with body:", req.body);
+
+  try {
+    // 1. Extract and validate data from the request body
+    const { front, back, hint, tags } = req.body as CreateCardRequest;
+
+    // Basic validation: front and back are required
+    if (!front || !back) {
+      console.error("Validation failed: front or back missing.", req.body);
+      res.status(400).json({
+        message: "Invalid request body. 'front' and 'back' are required fields.",
+      });
+    }
+
+    // Check if card already exists
+    if (doesCardExist(front, back)) {
+      console.warn(`Attempted to create a duplicate card: "${front}"`);
+      res.status(409).json({ // 409 Conflict
+        message: "A flashcard with this front and back already exists.",
+      });
+    }
+
+    // Create a new Flashcard instance
+    // The Flashcard constructor now handles optional hint/tags with defaults
+    const newCard = new Flashcard(front, back, hint, tags);
+
+    // Add the card to the state (Bucket 0)
+    addCard(newCard); 
+
+    // Respond with success
+    console.log(`Card created successfully: "${newCard.front}"`);
+    res.status(201).json({ // 201 Created
+      message: "Flashcard created successfully.",
+      card: { // Send back the created card details (good practice)
+        front: newCard.front,
+        back: newCard.back,
+        hint: newCard.hint,
+        tags: newCard.tags,
+      },
+    });
+
+  } catch (error) {
+    console.error("Error in POST /api/cards:", error);
+    res.status(500).json({
+      message: "Internal server error while creating the flashcard.",
+    });
+  }
+});
+
 
 // --- Start Server ---
 // Tell the Express app to start listening for incoming connections on the specified PORT.

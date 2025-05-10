@@ -4,17 +4,17 @@
 
 _(Crucial prerequisite: Ensure cards created by the extension are saved permanently)_
 
-- [ ] **Step 1: State Serialization/Deserialization Helpers**
+- [x] **Step 1: State Serialization/Deserialization Helpers**
 
-  - [ ] Define and export TypeScript interface(s) for the serializable state structure (e.g., `{ buckets: Record<number, SerializedFlashcard[]>, history: PracticeRecord[], day: number }` where `SerializedFlashcard` is a plain object).
-  - [ ] Create `test/stateSerialization.test.ts`.
-  - [ ] Write unit tests for a `serializeState(buckets: BucketMap, history: PracticeRecord[], day: number): SerializedState` function. Cover Map<number, Set<Flashcard>> to plain object conversion.
-  - [ ] Write unit tests for a `deserializeState(data: SerializedState): { buckets: BucketMap, history: PracticeRecord[], day: number }` function. Cover plain object to Map/Set conversion. Handle potential errors in data format.
-  - [ ] Include tests for empty state, populated state, and state with history.
-  - [ ] Create `src/logic/stateSerialization.ts`.
-  - [ ] Implement the `serializeState` function.
-  - [ ] Implement the `deserializeState` function.
-  - [ ] Ensure all tests pass.
+  - [x] Define and export TypeScript interface(s) for the serializable state structure (e.g., `{ buckets: Record<number, SerializedFlashcard[]>, history: PracticeRecord[], day: number }` where `SerializedFlashcard` is a plain object).
+  - [x] Create `test/stateSerialization.test.ts`.
+  - [x] Write unit tests for a `serializeState(buckets: BucketMap, history: PracticeRecord[], day: number): SerializedState` function. Cover Map<number, Set<Flashcard>> to plain object conversion.
+  - [x] Write unit tests for a `deserializeState(data: SerializedState): { buckets: BucketMap, history: PracticeRecord[], day: number }` function. Cover plain object to Map/Set conversion. Handle potential errors in data format.
+  - [x] Include tests for empty state, populated state, and state with history.
+  - [x] Create `src/logic/stateSerialization.ts`.
+  - [x] Implement the `serializeState` function.
+  - [x] Implement the `deserializeState` function.
+  - [x] Ensure all tests pass.
 
 - [ ] **Step 2: File I/O for State**
 
@@ -72,30 +72,26 @@ _(Crucial prerequisite: Ensure cards created by the extension are saved permanen
 
 - [ ] **Step 6: Enhance `Flashcard` Class and State Management**
 
-  - [ ] Review `src/logic/flashcards.ts`: Ensure `Flashcard` constructor can handle potentially optional `hint` and `tags`. If not, update it (e.g., make `hint` optional, accept `tags` defaulting to `[]`).
-  - [ ] Review `src/state.ts`:
-    - [ ] Consider adding an `addCard(card: Flashcard): void` function to encapsulate adding a new card to Bucket 0 and updating `currentBuckets`. This function should handle creating Bucket 0 if it doesn't exist.
-    - [ ] Ensure `findCard(front: string, back: string)` correctly searches through _all_ cards managed by the state (including newly added ones, not just `initialCards`). You might need to iterate through all buckets in `currentBuckets`.
-    - [ ] Consider adding a helper `doesCardExist(front: string, back: string): boolean` in `state.ts` for efficiency.
+  - [x] Review `src/logic/flashcards.ts`: Ensure `Flashcard` constructor can handle potentially optional `hint` and `tags`. If not, update it (e.g., make `hint` optional, accept `tags` defaulting to `[]`).
+  - [x] Review `src/state.ts`:
+    - [x] Consider adding an `addCard(card: Flashcard): void` function to encapsulate adding a new card to Bucket 0 and updating `currentBuckets`. This function should handle creating Bucket 0 if it doesn't exist.
+    - [x] Ensure `findCard(front: string, back: string)` correctly searches through _all_ cards managed by the state (including newly added ones, not just `initialCards`). You might need to iterate through all buckets in `currentBuckets`.
+    - [x] Consider adding a helper `doesCardExist(front: string, back: string): boolean` in `state.ts` for efficiency.
 
-- [ ] **Step 7: Implement `POST /api/cards` Endpoint**
-  - [ ] Define the API request body structure in `src/types/index.ts` (e.g., `interface CreateCardRequest { front: string; back: string; hint?: string; tags?: string[]; }`).
-  - [ ] In `src/server.ts`:
-    - [ ] Add a new route handler: `app.post('/api/cards', async (req: Request, res: Response) => { ... });`.
-    - [ ] Import `CreateCardRequest` type and the `addCard` / `doesCardExist` helpers from `state.ts`.
-    - [ ] Implement the route handler logic:
-      - [ ] Extract `front`, `back`, `hint`, `tags` from `req.body as CreateCardRequest`.
-      - [ ] Validate required fields (`front`, `back`). Respond with 400 Bad Request if invalid.
-      - [ ] (Optional but recommended) Check if a card with the same front/back already exists using `doesCardExist`. Respond with 409 Conflict if duplicate.
-      - [ ] Create a new `Flashcard` instance: `new Flashcard(front, back, hint || '', tags || [])`.
-      - [ ] Call the `addCard(newCard)` function from `state.ts` to add it to Bucket 0.
-      - [ ] Respond with 201 Created status and potentially the created card object `{ message: "Card created successfully", card: newCard }`.
-      - [ ] Include robust `try...catch` block for error handling (respond with 500 Internal Server Error).
-  - [ ] Add basic logging within the endpoint (request received, validation result, card created/duplicate, errors).
-  - [ ] Add integration tests for `POST /api/cards`:
-    - [ ] Test successful card creation (201).
-    - [ ] Test missing `front` or `back` (400).
-    - [ ] Test duplicate card detection (409) (if implemented).
+- [x] **Step 7: Implement `POST /api/cards` Endpoint**
+  - [x] Define the API request body structure in `src/types/index.ts` (e.g., `interface CreateCardRequest { front: string; back: string; hint?: string; tags?: string[]; }`).
+  - [x] In `src/server.ts`:
+    - [x] Add a new route handler: `app.post('/api/cards', async (req: Request, res: Response) => { ... });`.
+    - [x] Import `CreateCardRequest` type and the `addCard` / `doesCardExist` helpers from `state.ts`.
+    - [x] Implement the route handler logic:
+      - [x] Extract `front`, `back`, `hint`, `tags` from `req.body as CreateCardRequest`.
+      - [x] Validate required fields (`front`, `back`). Respond with 400 Bad Request if invalid.
+      - [x] (Optional but recommended) Check if a card with the same front/back already exists using `doesCardExist`. Respond with 409 Conflict if duplicate.
+      - [x] Create a new `Flashcard` instance: `new Flashcard(front, back, hint || '', tags || [])`.
+      - [x] Call the `addCard(newCard)` function from `state.ts` to add it to Bucket 0.
+      - [x] Respond with 201 Created status and potentially the created card object `{ message: "Card created successfully", card: newCard }`.
+      - [x] Include robust `try...catch` block for error handling (respond with 500 Internal Server Error).
+  - [x] Add basic logging within the endpoint (request received, validation result, card created/duplicate, errors).
 
 ## Phase 3: Browser Extension Frontend & Logic
 
