@@ -79,6 +79,17 @@ function PracticeView() {
     loadPracticeCards();
   }, []);
 
+  // === useEffect for Webcam Cleanup ===
+useEffect(() => {
+  return () => {
+    if (webcamStream) {
+      console.log("PracticeView: Cleaning up webcam stream.");
+      webcamStream.getTracks().forEach(track => track.stop());
+    }
+  };
+}, [webcamStream]); // Dependency array: run effect if webcamStream changes.
+                   // The cleanup part is crucial for unmounting.
+
   // --- Event Handlers ---
   const handleShowBack = () => {
     console.log("PracticeView: Showing back of card.");

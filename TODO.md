@@ -177,12 +177,12 @@ _(Crucial prerequisite: Ensure cards created by the extension are saved permanen
     - [ ] A `<video>` element (e.g., `#webcamFeed`, initially hidden or small preview). Ensure `muted`, `autoPlay`, `playsInline` attributes.
     - [ ] Conditional UI for displaying errors (`webcamError`).
     - [ ] Conditional UI for initialization (`isWebcamInitializing`).
-  - [ ] Implement `startWebcam` async function:
-    - [ ] Set `isWebcamInitializing = true`, `webcamError = null`.
-    - [ ] Use `try...catch` around `navigator.mediaDevices.getUserMedia({ video: true })`.
-    - [ ] On success: Get the stream, set `webcamStream`, set video element's `srcObject`, set `isWebcamEnabled = true`.
-    - [ ] On error: Catch specific errors (e.g., `NotAllowedError`, `NotFoundError`), set `webcamError` state with user-friendly message.
-    - [ ] Finally: Set `isWebcamInitializing = false`.
+  - [X] Implement `startWebcam` async function:
+    - [X] Set `isWebcamInitializing = true`, `webcamError = null`.
+    - [X] Use `try...catch` around `navigator.mediaDevices.getUserMedia({ video: true })`.
+    - [X] On success: Get the stream, set `webcamStream`, set video element's `srcObject`, set `isWebcamEnabled = true`.
+    - [X] On error: Catch specific errors (e.g., `NotAllowedError`, `NotFoundError`), set `webcamError` state with user-friendly message.
+    - [X] Finally: Set `isWebcamInitializing = false`.
   - [ ] Wire the "Enable Webcam Gestures" button to call `startWebcam`.
   - [ ] Add `useEffect` hook to cleanup (stop stream tracks) when component unmounts or `isWebcamEnabled` becomes false: `stream?.getTracks().forEach(track => track.stop());`.
 
