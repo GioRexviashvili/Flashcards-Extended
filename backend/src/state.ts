@@ -13,96 +13,17 @@ const initialCards: Flashcard[] = [
     ["sport", "football"]
   ),
   new Flashcard(
-    "What is the capital of France?",
-    "Paris",
-    "Eiffel Tower city",
-    ["geography"]
-  ),
-  new Flashcard("13 * 11", "141", "sum of digits of 13 place between of ones", [
-    "math",
-  ]),
-  new Flashcard(
-    "What planet is known as the Red Planet?",
-    "Mars",
-    "Fourth from the Sun",
-    ["science"]
-  ),
-  new Flashcard(
     "Who holds the record for most 3-pointers in NBA history?",
     "Stephen Curry",
-    "The 3-point king 👑",
+    "Golden Boy 👑",
     ["sport", "basketball"]
   ),
-  new Flashcard(
-    "Who is the fastest man in history?",
-    "Usain Bolt",
-    "100 metters in less than 10 seconds ⚡️",
-    ["sport", "athletics"]
-  ),
-  new Flashcard(
-    "Who wrote 'Hamlet'?",
-    "William Shakespeare",
-    "English playwright",
-    ["literature"]
-  ),
-  new Flashcard(
-    "What is the chemical symbol for water?",
-    "H2O",
-    "Two hydrogens",
-    ["science"]
-  ),
-  new Flashcard(
-    "Who painted the Mona Lisa?",
-    "Leonardo da Vinci",
-    "Italian artist",
-    ["art"]
-  ),
-  new Flashcard(
-    "What is the largest ocean?",
-    "Pacific",
-    "Between Asia and Americas",
-    ["geography"]
-  ),
-  new Flashcard("What is the square root of 64?", "8", "Perfect square", [
-    "math",
-  ]),
   new Flashcard(
     "Who won the historic sextuple in 2009?",
     "FC Barcelona",
     "Only club to win 6 trophies in a year 🏆🏆🏆🏆🏆🏆",
     ["sport", "football", "history"]
   ),
-  new Flashcard(
-    "Who discovered gravity?",
-    "Isaac Newton",
-    "Falling apple story",
-    ["science", "history"]
-  ),
-  new Flashcard(
-    "What is the boiling point of water (°C)?",
-    "100",
-    "Triple digits",
-    ["science"]
-  ),
-  new Flashcard("In what year did World War II end?", "1945", "Mid-40s", [
-    "history",
-  ]),
-  new Flashcard(
-    "Which language is spoken in Brazil?",
-    "Portuguese",
-    "Not Spanish",
-    ["language"]
-  ),
-  new Flashcard("What is 7 x 6?", "42", "think as sum of six 7", ["math"]),
-  new Flashcard(
-    "Who is the NBA all-time leading scorer?",
-    "LeBron James",
-    "MJ fans stay mad",
-    ["sport", "basketball"]
-  ),
-  new Flashcard("What is the smallest prime number?", "2", "Only even prime", [
-    "math",
-  ]),
   new Flashcard(
     "Which footballer is known for the 'Siiuu' celebration?",
     "Cristiano Ronaldo",

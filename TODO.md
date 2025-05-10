@@ -149,18 +149,18 @@ _(Crucial prerequisite: Ensure cards created by the extension are saved permanen
         - [X] Otherwise (e.g., 500, network error): Show generic error message.
       - [X] Handle `fetch` `catch` block for network errors.
 
-- [ ] **Step 11: Manual Test: Full Extension Flow**
-  - [ ] Ensure backend is running (with persistence working).
-  - [ ] Reload the unpacked extension.
-  - [ ] Go to any webpage, select some text.
-  - [ ] Right-click -> "Create Flashcard from '...'"
-  - [ ] Verify the popup opens and the selected text is shown as the "Back".
-  - [ ] Enter text for the "Front". Add optional hint/tags.
-  - [ ] Click "Save Card".
-  - [ ] Verify success message and popup closes (or appropriate feedback).
-  - [ ] Test error cases: saving without front text, saving a duplicate card (if implemented).
-  - [ ] Go to your main frontend application (`http://localhost:xxxx`).
-  - [ ] Practice cards and verify the newly created card appears in the session (it should be in Bucket 0, so likely appears soon).
+- [X] **Step 11: Manual Test: Full Extension Flow**
+  - [X] Ensure backend is running (with persistence working).
+  - [X] Reload the unpacked extension.
+  - [X] Go to any webpage, select some text.
+  - [X] Right-click -> "Create Flashcard from '...'"
+  - [X] Verify the popup opens and the selected text is shown as the "Back".
+  - [X] Enter text for the "Front". Add optional hint/tags.
+  - [X] Click "Save Card".
+  - [X] Verify success message and popup closes (or appropriate feedback).
+  - [X] Test error cases: saving without front text, saving a duplicate card (if implemented).
+  - [X] Go to your main frontend application (`http://localhost:xxxx`).
+  - [X] Practice cards and verify the newly created card appears in the session (it should be in Bucket 0, so likely appears soon).
 
 ## Phase 4: Frontend Gesture Recognition Integration
 
