@@ -121,33 +121,33 @@ _(Crucial prerequisite: Ensure cards created by the extension are saved permanen
     - [X] Trigger the extension's popup (it will read the stored text): `chrome.action.openPopup()` might work, or you may need `chrome.windows.create` if `openPopup` isn't reliable from context menu click. Research best V3 approach.
   - [X] Test loading the unpacked extension in your browser. Select text, right-click, see the menu item. Clicking it should (for now) just store the text (check extension dev tools storage).
 
-- [ ] **Step 10: Card Creation Popup UI & Logic**
+- [X] **Step 10: Card Creation Popup UI & Logic**
 
-  - [ ] Create `extension/popup.html`.
-  - [ ] Design the HTML form in `popup.html`:
-    - [ ] Label and `textarea` for "Front".
-    - [ ] Read-only display area (e.g., `div` or disabled `textarea`) for "Back" (to be populated).
-    - [ ] (Optional) Input field for "Hint".
-    - [ ] (Optional) Input field for "Tags" (comma-separated).
-    - [ ] "Save Card" button.
-    - [ ] Placeholder for status/error messages.
-  - [ ] Create `extension/popup.js`.
-  - [ ] Implement `popup.js`:
-    - [ ] Add event listener `DOMContentLoaded`.
-    - [ ] Inside listener: Use `chrome.storage.local.get(['cardBack'], (result) => { ... })` to retrieve the stored back text.
-    - [ ] Populate the "Back" display area with `result.cardBack`.
-    - [ ] Add event listener to the "Save Card" button.
-    - [ ] In the save button listener:
-      - [ ] Read values from "Front", "Hint", "Tags" fields.
-      - [ ] Perform basic validation (Front text is required). Show error in popup if invalid.
-      - [ ] Prepare the data payload: `{ front: ..., back: result.cardBack, hint: ..., tags: tags.split(',').map(t => t.trim()).filter(Boolean) }`.
-      - [ ] Use `fetch('http://localhost:3001/api/cards', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(payload) })`.
-      - [ ] Handle `fetch` response:
-        - [ ] If `response.ok` (e.g., 201): Show success message in popup, maybe close popup (`window.close()`). Clear stored `cardBack`.
-        - [ ] If 409 Conflict: Show "Card already exists" message.
-        - [ ] If 400 Bad Request: Show validation error message.
-        - [ ] Otherwise (e.g., 500, network error): Show generic error message.
-      - [ ] Handle `fetch` `catch` block for network errors.
+  - [X] Create `extension/popup.html`.
+  - [X] Design the HTML form in `popup.html`:
+    - [X] Label and `textarea` for "Front".
+    - [X] Read-only display area (e.g., `div` or disabled `textarea`) for "Back" (to be populated).
+    - [X] (Optional) Input field for "Hint".
+    - [X] (Optional) Input field for "Tags" (comma-separated).
+    - [X] "Save Card" button.
+    - [X] Placeholder for status/error messages.
+  - [X] Create `extension/popup.js`.
+  - [X] Implement `popup.js`:
+    - [X] Add event listener `DOMContentLoaded`.
+    - [X] Inside listener: Use `chrome.storage.local.get(['cardBack'], (result) => { ... })` to retrieve the stored back text.
+    - [X] Populate the "Back" display area with `result.cardBack`.
+    - [X] Add event listener to the "Save Card" button.
+    - [X] In the save button listener:
+      - [X] Read values from "Front", "Hint", "Tags" fields.
+      - [X] Perform basic validation (Front text is required). Show error in popup if invalid.
+      - [X] Prepare the data payload: `{ front: ..., back: result.cardBack, hint: ..., tags: tags.split(',').map(t => t.trim()).filter(Boolean) }`.
+      - [X] Use `fetch('http://localhost:3001/api/cards', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(payload) })`.
+      - [X] Handle `fetch` response:
+        - [X] If `response.ok` (e.g., 201): Show success message in popup, maybe close popup (`window.close()`). Clear stored `cardBack`.
+        - [X] If 409 Conflict: Show "Card already exists" message.
+        - [X] If 400 Bad Request: Show validation error message.
+        - [X] Otherwise (e.g., 500, network error): Show generic error message.
+      - [X] Handle `fetch` `catch` block for network errors.
 
 - [ ] **Step 11: Manual Test: Full Extension Flow**
   - [ ] Ensure backend is running (with persistence working).
