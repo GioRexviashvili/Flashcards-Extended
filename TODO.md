@@ -76,10 +76,10 @@ _(Crucial prerequisite: Ensure cards created by the extension are saved permanen
   - [X] Review `src/state.ts`:
     - [X] Consider adding an `addCard(card: Flashcard): void` function to encapsulate adding a new card to Bucket 0 and updating `currentBuckets`. This function should handle creating Bucket 0 if it doesn't exist.
     - [X] Ensure `findCard(front: string, back: string)` correctly searches through _all_ cards managed by the state (including newly added ones, not just `initialCards`). You might need to iterate through all buckets in `currentBuckets`.
-    - [ ] Consider adding a helper `doesCardExist(front: string, back: string): boolean` in `state.ts` for efficiency.
+    - [X] Consider adding a helper `doesCardExist(front: string, back: string): boolean` in `state.ts` for efficiency.
 
-- [ ] **Step 7: Implement `POST /api/cards` Endpoint**
-  - [ ] Define the API request body structure in `src/types/index.ts` (e.g., `interface CreateCardRequest { front: string; back: string; hint?: string; tags?: string[]; }`).
+- [X] **Step 7: Implement `POST /api/cards` Endpoint**
+  - [X] Define the API request body structure in `src/types/index.ts` (e.g., `interface CreateCardRequest { front: string; back: string; hint?: string; tags?: string[]; }`).
   - [ ] In `src/server.ts`:
     - [ ] Add a new route handler: `app.post('/api/cards', async (req: Request, res: Response) => { ... });`.
     - [ ] Import `CreateCardRequest` type and the `addCard` / `doesCardExist` helpers from `state.ts`.

@@ -64,3 +64,14 @@ export interface PracticeRecord {
   previousBucket: number;
   newBucket: number;
 }
+
+/**
+ * Represents the data structure for a request to create a new flashcard.
+ * Sent by the client (e.g., browser extension) in the body of a POST request.
+ */
+export interface CreateCardRequest {
+  front: string;   
+  back: string;    
+  hint?: string;   
+  tags?: string[]; 
+}
