@@ -18,13 +18,13 @@ export class Flashcard {
   constructor(
     front: string,
     back: string,
-    hint: string,
-    tags: ReadonlyArray<string>
+    hint: string = "",
+    tags: ReadonlyArray<string> = []
   ) {
     this.front = front;
     this.back = back;
-    this.hint = hint || "";
-    this.tags = tags || [];
+    this.hint = hint;
+    this.tags = tags;
   }
 }
 
