@@ -72,9 +72,9 @@ _(Crucial prerequisite: Ensure cards created by the extension are saved permanen
 
 - [ ] **Step 6: Enhance `Flashcard` Class and State Management**
 
-  - [ ] Review `src/logic/flashcards.ts`: Ensure `Flashcard` constructor can handle potentially optional `hint` and `tags`. If not, update it (e.g., make `hint` optional, accept `tags` defaulting to `[]`).
-  - [ ] Review `src/state.ts`:
-    - [ ] Consider adding an `addCard(card: Flashcard): void` function to encapsulate adding a new card to Bucket 0 and updating `currentBuckets`. This function should handle creating Bucket 0 if it doesn't exist.
+  - [X] Review `src/logic/flashcards.ts`: Ensure `Flashcard` constructor can handle potentially optional `hint` and `tags`. If not, update it (e.g., make `hint` optional, accept `tags` defaulting to `[]`).
+  - [X] Review `src/state.ts`:
+    - [X] Consider adding an `addCard(card: Flashcard): void` function to encapsulate adding a new card to Bucket 0 and updating `currentBuckets`. This function should handle creating Bucket 0 if it doesn't exist.
     - [ ] Ensure `findCard(front: string, back: string)` correctly searches through _all_ cards managed by the state (including newly added ones, not just `initialCards`). You might need to iterate through all buckets in `currentBuckets`.
     - [ ] Consider adding a helper `doesCardExist(front: string, back: string): boolean` in `state.ts` for efficiency.
 

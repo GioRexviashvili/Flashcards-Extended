@@ -220,6 +220,28 @@ export function isBucketMapEmpty(): boolean {
   return false;
 }
 
+
+/**
+ * Adds a new flashcard to Bucket 0.
+ * If Bucket 0 does not exist, it will be created.
+ * @param newCard The Flashcard object to add.
+ */
+export function addCard(newCard: Flashcard): void {
+  if (!currentBuckets.has(0)) {
+    console.log("Bucket 0 does not exist. Creating it.");
+    currentBuckets.set(0, new Set<Flashcard>());
+  }
+
+  const bucketZero = currentBuckets.get(0)!; // We know it exists now
+  bucketZero.add(newCard);
+  console.log(`Card "${newCard.front}" added to Bucket 0.`);
+
+  // For now, let's also add it to initialCards so the current findCard can see it.
+  // This is a temporary measure until findCard is improved.
+  initialCards.push(newCard); // TEMPORARY - will be improved
+}
+
+
 // --- Confirmation Log ---
 // This runs once when the server starts and loads this file.
 // Useful for confirming that the initial state was set up.
