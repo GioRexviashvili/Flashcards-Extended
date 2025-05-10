@@ -302,7 +302,7 @@ app.post("/api/cards", (req: Request, res: Response) => {
     // Basic validation: front and back are required
     if (!front || !back) {
       console.error("Validation failed: front or back missing.", req.body);
-      return res.status(400).json({
+      res.status(400).json({
         message: "Invalid request body. 'front' and 'back' are required fields.",
       });
     }
@@ -310,7 +310,7 @@ app.post("/api/cards", (req: Request, res: Response) => {
     // Check if card already exists
     if (doesCardExist(front, back)) {
       console.warn(`Attempted to create a duplicate card: "${front}"`);
-      return res.status(409).json({ // 409 Conflict
+      res.status(409).json({ // 409 Conflict
         message: "A flashcard with this front and back already exists.",
       });
     }
