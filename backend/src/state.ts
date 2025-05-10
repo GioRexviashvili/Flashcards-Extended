@@ -241,9 +241,7 @@ export function addCard(newCard: Flashcard): void {
   bucketZero.add(newCard);
   console.log(`Card "${newCard.front}" added to Bucket 0.`);
 
-  // For now, let's also add it to initialCards so the current findCard can see it.
-  // This is a temporary measure until findCard is improved.
-  initialCards.push(newCard); // TEMPORARY - will be improved
+
 }
 
 
