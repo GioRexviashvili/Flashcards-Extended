@@ -97,7 +97,7 @@ export function serializeState(
       front: card.front,
       back: card.back,
       hint: card.hint || undefined, // Include hint only if it exists and is not empty
-      tags: [...card.tags] // Convert ReadonlyArray to regular array for serialization
+      tags: card.tags ? [...card.tags] : [] // Convert ReadonlyArray to regular array for serialization
     }));
 
     // Add the array to the serialized buckets object with the bucket number as a string key
