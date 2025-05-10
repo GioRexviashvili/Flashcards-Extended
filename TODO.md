@@ -109,17 +109,17 @@ _(Crucial prerequisite: Ensure cards created by the extension are saved permanen
     - [X] `background`: `{ "service_worker": "background.js" }`
     - [X] `action`: `{ "default_popup": "popup.html", "default_title": "Create Flashcard" }` (for the input form).
 
-- [ ] **Step 9: Context Menu & Background Script**
+- [X] **Step 9: Context Menu & Background Script**
 
-  - [ ] Create `extension/background.js`.
-  - [ ] Implement `chrome.runtime.onInstalled` listener in `background.js` to create a context menu item:
-    - [ ] `chrome.contextMenus.create({ id: "createFlashcard", title: "Create Flashcard from '%s'", contexts: ["selection"] });`
-  - [ ] Implement `chrome.contextMenus.onClicked` listener in `background.js`:
-    - [ ] Check if `info.menuItemId === "createFlashcard"` and `info.selectionText`.
-    - [ ] Get the selected text: `const backText = info.selectionText;`
-    - [ ] Store the `backText` temporarily using `chrome.storage.local.set({ cardBack: backText })`.
-    - [ ] Trigger the extension's popup (it will read the stored text): `chrome.action.openPopup()` might work, or you may need `chrome.windows.create` if `openPopup` isn't reliable from context menu click. Research best V3 approach.
-  - [ ] Test loading the unpacked extension in your browser. Select text, right-click, see the menu item. Clicking it should (for now) just store the text (check extension dev tools storage).
+  -[X] Create `extension/background.js`.
+  - [X] Implement `chrome.runtime.onInstalled` listener in `background.js` to create a context menu item:
+    - [X] `chrome.contextMenus.create({ id: "createFlashcard", title: "Create Flashcard from '%s'", contexts: ["selection"] });`
+  - [X] Implement `chrome.contextMenus.onClicked` listener in `background.js`:
+    - [X] Check if `info.menuItemId === "createFlashcard"` and `info.selectionText`.
+    - [X] Get the selected text: `const backText = info.selectionText;`
+    - [X] Store the `backText` temporarily using `chrome.storage.local.set({ cardBack: backText })`.
+    - [X] Trigger the extension's popup (it will read the stored text): `chrome.action.openPopup()` might work, or you may need `chrome.windows.create` if `openPopup` isn't reliable from context menu click. Research best V3 approach.
+  - [X] Test loading the unpacked extension in your browser. Select text, right-click, see the menu item. Clicking it should (for now) just store the text (check extension dev tools storage).
 
 - [ ] **Step 10: Card Creation Popup UI & Logic**
 
