@@ -1,0 +1,22 @@
+{
+  "manifest_version": 3,
+  "name": "Flashcard Quick Creator",
+  "version": "1.0",
+  "description": "Select text on any page to create flashcards.",
+  "permissions": [
+    "contextMenus",
+    "storage",
+    "activeTab",
+    "scripting"
+  ],
+  "host_permissions": [
+    "http://localhost:3001/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Create Flashcard"
+  }
+}
