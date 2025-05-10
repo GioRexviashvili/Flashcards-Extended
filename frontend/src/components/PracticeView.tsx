@@ -1,9 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 
-
 import type { Flashcard } from "../types";
 import { AnswerDifficulty } from "../types";
-
 
 import {
   fetchPracticeCards,
@@ -12,11 +10,9 @@ import {
   fetchHint,
 } from "../services/api";
 
-
 import FlashcardDisplay from "./FlashcardDisplay";
 
 function PracticeView() {
- 
   const [practiceCards, setPracticeCards] = useState<Flashcard[]>([]);
   const [currentCardIndex, setCurrentCardIndex] = useState<number>(0);
   const [showBack, setShowBack] = useState<boolean>(false);
@@ -34,7 +30,8 @@ function PracticeView() {
   const [isWebcamEnabled, setIsWebcamEnabled] = useState<boolean>(false);
   const [webcamStream, setWebcamStream] = useState<MediaStream | null>(null);
   const [webcamError, setWebcamError] = useState<string | null>(null);
-  const [isWebcamInitializing, setIsWebcamInitializing] = useState<boolean>(false);
+  const [isWebcamInitializing, setIsWebcamInitializing] =
+    useState<boolean>(false);
   const videoRef = useRef<HTMLVideoElement>(null); // Ref for the video element
 
   // --- Data Fetching Function ---
@@ -79,21 +76,28 @@ function PracticeView() {
     loadPracticeCards();
   }, []);
 
-useEffect(() => {
-  // This effect runs when webcamStream changes.
-  if (webcamStream && videoRef.current) {
-    console.log("PracticeView (useEffect for video): Attaching stream to video element.");
-    videoRef.current.srcObject = webcamStream;
-    videoRef.current.onloadedmetadata = () => { 
-      videoRef.current?.play().catch(error => {
-        console.error("PracticeView (useEffect for video): Error trying to play video:", error);
-      });
-    };
-  } else if (!webcamStream && videoRef.current) {
-    videoRef.current.srcObject = null;
-    console.log("PracticeView (useEffect for video): Cleared srcObject as webcamStream is null.");
-  }
-}, [webcamStream]); 
+  useEffect(() => {
+    // This effect runs when webcamStream changes.
+    if (webcamStream && videoRef.current) {
+      console.log(
+        "PracticeView (useEffect for video): Attaching stream to video element."
+      );
+      videoRef.current.srcObject = webcamStream;
+      videoRef.current.onloadedmetadata = () => {
+        videoRef.current?.play().catch((error) => {
+          console.error(
+            "PracticeView (useEffect for video): Error trying to play video:",
+            error
+          );
+        });
+      };
+    } else if (!webcamStream && videoRef.current) {
+      videoRef.current.srcObject = null;
+      console.log(
+        "PracticeView (useEffect for video): Cleared srcObject as webcamStream is null."
+      );
+    }
+  }, [webcamStream]);
 
   // --- Event Handlers ---
   const handleShowBack = () => {
@@ -167,54 +171,58 @@ useEffect(() => {
   };
 
   // === Webcam Functions ===
-const startWebcam = async () => {
-  console.log("PracticeView: Attempting to start webcam...");
-  setIsWebcamInitializing(true);
-  setWebcamError(null);
-  setIsWebcamEnabled(false); 
+  const startWebcam = async () => {
+    console.log("PracticeView: Attempting to start webcam...");
+    setIsWebcamInitializing(true);
+    setWebcamError(null);
+    setIsWebcamEnabled(false);
 
-  if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-      console.log("PracticeView: Webcam stream object:", stream); 
-      if (!stream.active) {
-        console.warn("PracticeView: Stream is not active upon acquisition.");
+    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: true,
+        });
+        console.log("PracticeView: Webcam stream object:", stream);
+        if (!stream.active) {
+          console.warn("PracticeView: Stream is not active upon acquisition.");
+        }
+        setWebcamStream(stream);
+        setIsWebcamEnabled(true);
+        console.log("PracticeView: Webcam stream acquired and state set.");
+      } catch (err: any) {
+        console.error("PracticeView: Error accessing webcam:", err);
+        let message = "Failed to access webcam.";
+        if (err.name === "NotAllowedError") {
+          message =
+            "Webcam permission denied. Please allow access in your browser settings.";
+        } else if (err.name === "NotFoundError") {
+          message =
+            "No webcam found. Please ensure a webcam is connected and enabled.";
+        }
+        setWebcamError(message);
+        setIsWebcamEnabled(false);
+        setWebcamStream(null);
+      } finally {
+        setIsWebcamInitializing(false);
       }
-      setWebcamStream(stream);
-      setIsWebcamEnabled(true); 
-      console.log("PracticeView: Webcam stream acquired and state set.");
-    } catch (err: any) {
-      console.error("PracticeView: Error accessing webcam:", err);
-      let message = "Failed to access webcam.";
-      if (err.name === "NotAllowedError") {
-        message = "Webcam permission denied. Please allow access in your browser settings.";
-      } else if (err.name === "NotFoundError") {
-        message = "No webcam found. Please ensure a webcam is connected and enabled.";
-      }
-      setWebcamError(message);
+    } else {
+      setWebcamError("Webcam access is not supported by your browser.");
+      setIsWebcamInitializing(false);
       setIsWebcamEnabled(false);
       setWebcamStream(null);
-    } finally {
-      setIsWebcamInitializing(false);
     }
-  } else {
-    setWebcamError("Webcam access is not supported by your browser.");
-    setIsWebcamInitializing(false);
-    setIsWebcamEnabled(false);
-    setWebcamStream(null);
-  }
-};
+  };
 
-const stopWebcam = () => {
-  if (webcamStream) {
-    webcamStream.getTracks().forEach(track => track.stop());
-    console.log("PracticeView: Webcam stopped.");
-  }
-  setWebcamStream(null);
-  setIsWebcamEnabled(false);
-  // Do not clear webcamError here, user might want to see why it failed
-  // Do not set isWebcamInitializing here
-};
+  const stopWebcam = () => {
+    if (webcamStream) {
+      webcamStream.getTracks().forEach((track) => track.stop());
+      console.log("PracticeView: Webcam stopped.");
+    }
+    setWebcamStream(null);
+    setIsWebcamEnabled(false);
+    // Do not clear webcamError here, user might want to see why it failed
+    // Do not set isWebcamInitializing here
+  };
 
   // --- Rendering Logic ---
 
@@ -270,9 +278,7 @@ const stopWebcam = () => {
     console.warn(
       "PracticeView: currentCardIndex is out of bounds, marking session finished."
     );
-    return (
-      <div className="error">Reached end of cards unexpectedly.</div>
-    );
+    return <div className="error">Reached end of cards unexpectedly.</div>;
   }
 
   // Get the current card
@@ -293,14 +299,14 @@ const stopWebcam = () => {
       {/* Hint section */}
       {!showBack && (
         <div className="hint-container">
-          <button 
-            onClick={handleGetHint} 
+          <button
+            onClick={handleGetHint}
             disabled={loadingHint}
             className="btn-secondary"
           >
             {loadingHint ? "Loading Hint..." : "Get Hint"}
           </button>
-          
+
           {hint && <div className="hint-text">Hint: {hint}</div>}
           {hintError && <div className="hint-error">{hintError}</div>}
         </div>
@@ -335,29 +341,38 @@ const stopWebcam = () => {
       </div>
 
       {/* === Webcam Gesture Controls Section === */}
-    <div className="webcam-controls" style={{ marginTop: '20px', textAlign: 'center' }}>
-      {!isWebcamEnabled && !isWebcamInitializing && (
-        <button onClick={startWebcam} className="btn-secondary">
-          Enable Webcam for Gestures
-        </button>
-      )}
-      {isWebcamInitializing && <p>Initializing webcam...</p>}
-      {webcamError && <p className="error" style={{color: 'red'}}>{webcamError}</p>}
+      <div
+        className="webcam-controls"
+        style={{ marginTop: "20px", textAlign: "center" }}
+      >
+        {!isWebcamEnabled && !isWebcamInitializing && (
+          <button onClick={startWebcam} className="btn-secondary">
+            Enable Webcam for Gestures
+          </button>
+        )}
+        {isWebcamInitializing && <p>Initializing webcam...</p>}
+        {webcamError && (
+          <p className="error" style={{ color: "red" }}>
+            {webcamError}
+          </p>
+        )}
 
-      {isWebcamEnabled && (
-        <div>
-          <video
-            ref={videoRef}
-            autoPlay
-            playsInline
-            muted
-            style={{ width: '320px', height: '240px', border: '1px solid #ccc', borderRadius: 'var(--radius-md)', marginTop: '10px' }}
-          />
-           <button onClick={stopWebcam} style={{marginTop: '10px'}}>Disable Webcam</button> 
-          <p>Webcam enabled. Ready for gesture model.</p>
-        </div>
-      )}
-    </div>
+        {isWebcamEnabled && (
+          <div className="webcam-video-container">
+            <video
+              ref={videoRef}
+              autoPlay
+              playsInline
+              muted
+              className="webcam-video-feed"
+            />
+            <button onClick={stopWebcam} className="btn-secondary">
+              Disable Webcam
+            </button>
+            <p>Webcam enabled. Ready for gesture model.</p>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
