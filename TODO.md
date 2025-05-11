@@ -97,70 +97,70 @@ _(Crucial prerequisite: Ensure cards created by the extension are saved permanen
 
 - [ ] **Step 8: Basic Extension Structure & Manifest**
 
-  - [ ] Create `extension/` directory at the root of your project (alongside `backend/` and `frontend/`).
-  - [ ] Create `extension/manifest.json` (Manifest V3).
-  - [ ] Configure `manifest.json`:
-    - [ ] `manifest_version`: 3
-    - [ ] `name`: "Flashcard Quick Creator" (or similar)
-    - [ ] `version`: "1.0"
-    - [ ] `description`: "Select text on any page to create flashcards."
-    - [ ] `permissions`: [`contextMenus`, `storage`, `activeTab`, `scripting`] (add `notifications` later if needed).
-    - [ ] `host_permissions`: [`http://localhost:3001/*`] (for API calls).
-    - [ ] `background`: `{ "service_worker": "background.js" }`
-    - [ ] `action`: `{ "default_popup": "popup.html", "default_title": "Create Flashcard" }` (for the input form).
+  - [X] Create `extension/` directory at the root of your project (alongside `backend/` and `frontend/`).
+  - [X] Create `extension/manifest.json` (Manifest V3).
+  - [X] Configure `manifest.json`:
+    - [X] `manifest_version`: 3
+    - [X] `name`: "Flashcard Quick Creator" (or similar)
+    - [X] `version`: "1.0"
+    - [X] `description`: "Select text on any page to create flashcards."
+    - [X] `permissions`: [`contextMenus`, `storage`, `activeTab`, `scripting`] (add `notifications` later if needed).
+    - [X] `host_permissions`: [`http://localhost:3001/*`] (for API calls).
+    - [X] `background`: `{ "service_worker": "background.js" }`
+    - [X] `action`: `{ "default_popup": "popup.html", "default_title": "Create Flashcard" }` (for the input form).
 
-- [ ] **Step 9: Context Menu & Background Script**
+- [X] **Step 9: Context Menu & Background Script**
 
-  - [ ] Create `extension/background.js`.
-  - [ ] Implement `chrome.runtime.onInstalled` listener in `background.js` to create a context menu item:
-    - [ ] `chrome.contextMenus.create({ id: "createFlashcard", title: "Create Flashcard from '%s'", contexts: ["selection"] });`
-  - [ ] Implement `chrome.contextMenus.onClicked` listener in `background.js`:
-    - [ ] Check if `info.menuItemId === "createFlashcard"` and `info.selectionText`.
-    - [ ] Get the selected text: `const backText = info.selectionText;`
-    - [ ] Store the `backText` temporarily using `chrome.storage.local.set({ cardBack: backText })`.
-    - [ ] Trigger the extension's popup (it will read the stored text): `chrome.action.openPopup()` might work, or you may need `chrome.windows.create` if `openPopup` isn't reliable from context menu click. Research best V3 approach.
-  - [ ] Test loading the unpacked extension in your browser. Select text, right-click, see the menu item. Clicking it should (for now) just store the text (check extension dev tools storage).
+  -[X] Create `extension/background.js`.
+  - [X] Implement `chrome.runtime.onInstalled` listener in `background.js` to create a context menu item:
+    - [X] `chrome.contextMenus.create({ id: "createFlashcard", title: "Create Flashcard from '%s'", contexts: ["selection"] });`
+  - [X] Implement `chrome.contextMenus.onClicked` listener in `background.js`:
+    - [X] Check if `info.menuItemId === "createFlashcard"` and `info.selectionText`.
+    - [X] Get the selected text: `const backText = info.selectionText;`
+    - [X] Store the `backText` temporarily using `chrome.storage.local.set({ cardBack: backText })`.
+    - [X] Trigger the extension's popup (it will read the stored text): `chrome.action.openPopup()` might work, or you may need `chrome.windows.create` if `openPopup` isn't reliable from context menu click. Research best V3 approach.
+  - [X] Test loading the unpacked extension in your browser. Select text, right-click, see the menu item. Clicking it should (for now) just store the text (check extension dev tools storage).
 
-- [ ] **Step 10: Card Creation Popup UI & Logic**
+- [X] **Step 10: Card Creation Popup UI & Logic**
 
-  - [ ] Create `extension/popup.html`.
-  - [ ] Design the HTML form in `popup.html`:
-    - [ ] Label and `textarea` for "Front".
-    - [ ] Read-only display area (e.g., `div` or disabled `textarea`) for "Back" (to be populated).
-    - [ ] (Optional) Input field for "Hint".
-    - [ ] (Optional) Input field for "Tags" (comma-separated).
-    - [ ] "Save Card" button.
-    - [ ] Placeholder for status/error messages.
-  - [ ] Create `extension/popup.js`.
-  - [ ] Implement `popup.js`:
-    - [ ] Add event listener `DOMContentLoaded`.
-    - [ ] Inside listener: Use `chrome.storage.local.get(['cardBack'], (result) => { ... })` to retrieve the stored back text.
-    - [ ] Populate the "Back" display area with `result.cardBack`.
-    - [ ] Add event listener to the "Save Card" button.
-    - [ ] In the save button listener:
-      - [ ] Read values from "Front", "Hint", "Tags" fields.
-      - [ ] Perform basic validation (Front text is required). Show error in popup if invalid.
-      - [ ] Prepare the data payload: `{ front: ..., back: result.cardBack, hint: ..., tags: tags.split(',').map(t => t.trim()).filter(Boolean) }`.
-      - [ ] Use `fetch('http://localhost:3001/api/cards', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(payload) })`.
-      - [ ] Handle `fetch` response:
-        - [ ] If `response.ok` (e.g., 201): Show success message in popup, maybe close popup (`window.close()`). Clear stored `cardBack`.
-        - [ ] If 409 Conflict: Show "Card already exists" message.
-        - [ ] If 400 Bad Request: Show validation error message.
-        - [ ] Otherwise (e.g., 500, network error): Show generic error message.
-      - [ ] Handle `fetch` `catch` block for network errors.
+  - [X] Create `extension/popup.html`.
+  - [X] Design the HTML form in `popup.html`:
+    - [X] Label and `textarea` for "Front".
+    - [X] Read-only display area (e.g., `div` or disabled `textarea`) for "Back" (to be populated).
+    - [X] (Optional) Input field for "Hint".
+    - [X] (Optional) Input field for "Tags" (comma-separated).
+    - [X] "Save Card" button.
+    - [X] Placeholder for status/error messages.
+  - [X] Create `extension/popup.js`.
+  - [X] Implement `popup.js`:
+    - [X] Add event listener `DOMContentLoaded`.
+    - [X] Inside listener: Use `chrome.storage.local.get(['cardBack'], (result) => { ... })` to retrieve the stored back text.
+    - [X] Populate the "Back" display area with `result.cardBack`.
+    - [X] Add event listener to the "Save Card" button.
+    - [X] In the save button listener:
+      - [X] Read values from "Front", "Hint", "Tags" fields.
+      - [X] Perform basic validation (Front text is required). Show error in popup if invalid.
+      - [X] Prepare the data payload: `{ front: ..., back: result.cardBack, hint: ..., tags: tags.split(',').map(t => t.trim()).filter(Boolean) }`.
+      - [X] Use `fetch('http://localhost:3001/api/cards', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(payload) })`.
+      - [X] Handle `fetch` response:
+        - [X] If `response.ok` (e.g., 201): Show success message in popup, maybe close popup (`window.close()`). Clear stored `cardBack`.
+        - [X] If 409 Conflict: Show "Card already exists" message.
+        - [X] If 400 Bad Request: Show validation error message.
+        - [X] Otherwise (e.g., 500, network error): Show generic error message.
+      - [X] Handle `fetch` `catch` block for network errors.
 
-- [ ] **Step 11: Manual Test: Full Extension Flow**
-  - [ ] Ensure backend is running (with persistence working).
-  - [ ] Reload the unpacked extension.
-  - [ ] Go to any webpage, select some text.
-  - [ ] Right-click -> "Create Flashcard from '...'"
-  - [ ] Verify the popup opens and the selected text is shown as the "Back".
-  - [ ] Enter text for the "Front". Add optional hint/tags.
-  - [ ] Click "Save Card".
-  - [ ] Verify success message and popup closes (or appropriate feedback).
-  - [ ] Test error cases: saving without front text, saving a duplicate card (if implemented).
-  - [ ] Go to your main frontend application (`http://localhost:xxxx`).
-  - [ ] Practice cards and verify the newly created card appears in the session (it should be in Bucket 0, so likely appears soon).
+- [X] **Step 11: Manual Test: Full Extension Flow**
+  - [X] Ensure backend is running (with persistence working).
+  - [X] Reload the unpacked extension.
+  - [X] Go to any webpage, select some text.
+  - [X] Right-click -> "Create Flashcard from '...'"
+  - [X] Verify the popup opens and the selected text is shown as the "Back".
+  - [X] Enter text for the "Front". Add optional hint/tags.
+  - [X] Click "Save Card".
+  - [X] Verify success message and popup closes (or appropriate feedback).
+  - [X] Test error cases: saving without front text, saving a duplicate card (if implemented).
+  - [X] Go to your main frontend application (`http://localhost:xxxx`).
+  - [X] Practice cards and verify the newly created card appears in the session (it should be in Bucket 0, so likely appears soon).
 
 ## Phase 4: Frontend Gesture Recognition Integration
 
