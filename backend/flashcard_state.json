@@ -1,0 +1,103 @@
+{
+  "buckets": {
+    "0": [
+      {
+        "front": "Who has scored the most goals in football history?",
+        "back": "Cristiano Ronaldo",
+        "hint": "Messi is better, by the way",
+        "tags": [
+          "sport",
+          "football"
+        ]
+      },
+      {
+        "front": "Who holds the record for most 3-pointers in NBA history?",
+        "back": "Stephen Curry",
+        "hint": "Golden Boy 👑",
+        "tags": [
+          "sport",
+          "basketball"
+        ]
+      },
+      {
+        "front": "Who won the historic sextuple in 2009?",
+        "back": "FC Barcelona",
+        "hint": "Only club to win 6 trophies in a year 🏆🏆🏆🏆🏆🏆",
+        "tags": [
+          "sport",
+          "football",
+          "history"
+        ]
+      },
+      {
+        "front": "Who discovered gravity?",
+        "back": "Isaac Newton",
+        "hint": "Falling apple story",
+        "tags": [
+          "science",
+          "history"
+        ]
+      },
+      {
+        "front": "What is the boiling point of water (°C)?",
+        "back": "100",
+        "hint": "Triple digits",
+        "tags": [
+          "science"
+        ]
+      },
+      {
+        "front": "In what year did World War II end?",
+        "back": "1945",
+        "hint": "Mid-40s",
+        "tags": [
+          "history"
+        ]
+      },
+      {
+        "front": "Which language is spoken in Brazil?",
+        "back": "Portuguese",
+        "hint": "Not Spanish",
+        "tags": [
+          "language"
+        ]
+      },
+      {
+        "front": "What is 7 x 6?",
+        "back": "42",
+        "hint": "think as sum of six 7",
+        "tags": [
+          "math"
+        ]
+      },
+      {
+        "front": "Who is the NBA all-time leading scorer?",
+        "back": "LeBron James",
+        "hint": "MJ fans stay mad",
+        "tags": [
+          "sport",
+          "basketball"
+        ]
+      },
+      {
+        "front": "What is the smallest prime number?",
+        "back": "2",
+        "hint": "Only even prime",
+        "tags": [
+          "math"
+        ]
+      },
+      {
+        "front": "Which footballer is known for the 'Siiuu' celebration?",
+        "back": "Cristiano Ronaldo",
+        "hint": "You can hear it in your head",
+        "tags": [
+          "sport",
+          "football"
+        ]
+      }
+    ]
+  },
+  "history": [],
+  "day": 0
+}
