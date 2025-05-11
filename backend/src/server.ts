@@ -1,9 +1,16 @@
+import {
+  saveStateToFile,
+  serializeState,
+  STATE_FILE_PATH
+} from "./logic/stateSerialization";
+ 
 // --- Core Imports ---
-import express, { Request, Response } from "express"; // Import Express framework and its Request/Response types
-import cors from "cors"; // Import CORS middleware
-
+import express, { Request, Response } from "express";
+import cors from "cors";
+import fs from 'fs/promises';
+import path from 'path';
+ 
 // --- Logic Imports ---
-// Import the specific algorithm functions we need to call
 import {
   toBucketSets,
   practice,
@@ -11,10 +18,9 @@ import {
   getHint,
   computeProgress,
 } from "./logic/algorithm";
-import { Flashcard, AnswerDifficulty, BucketMap } from "./logic/flashcards"; // Import core types/enums
-
+import { Flashcard, AnswerDifficulty, BucketMap } from "./logic/flashcards";
+ 
 // --- State Imports ---
-// Import functions to interact with our in-memory state
 import {
   getCurrentDay,
   getBuckets,
@@ -27,10 +33,10 @@ import {
   isBucketMapEmpty,
   addCard,
   doesCardExist,
+  initializeState,
 } from "./state";
-
+ 
 // --- Type Imports ---
-// Import the API data structure interfaces we defined
 import type {
   PracticeSession,
   UpdateRequest,
@@ -39,57 +45,46 @@ import type {
   PracticeRecord,
   CreateCardRequest,
 } from "./types";
-
+ 
 const app = express();
 const PORT = process.env.PORT || 3001;
-
+let isShuttingDown = false;
+ 
 // --- Middleware ---
-// Middleware functions run on incoming requests before they reach your specific route handlers.
-
-// Enable CORS (Cross-Origin Resource Sharing)
-// This is crucial because our frontend and backend are considered different "origins".
-// Browsers block requests between different origins by default for security.
-// cors() adds headers to the response telling the browser it's okay.
 app.use(cors());
-
-// Enable parsing of JSON request bodies
-// When the frontend sends data (e.g., in a POST request for /api/update),
-// it usually sends it as a JSON string. This middleware parses that string
-// and makes the resulting JavaScript object available as `req.body`.
 app.use(express.json());
-
+ 
 // --- API Routes ---
-// Define the specific endpoints the frontend can call.
-
+ 
 /**
  * GET /api/practice
  * Gets the flashcards scheduled for practice on the current day.
  */
 app.get("/api/practice", (req: Request, res: Response) => {
   console.log("GET /api/practice received");
-
+ 
   try {
     const day = getCurrentDay();
     const buckets = getBuckets();
-
+ 
     const bucketMapAsArray = toBucketSets(buckets);
-
+ 
     if (isBucketMapEmpty()) res.json({ cards: [], day: day, retired: true });
-
+ 
     const cardsToPractice: Set<Flashcard> = practice(bucketMapAsArray, day);
-
+ 
     // Convert the result (Set) to an array for JSON response
     const cardsArray = Array.from(cardsToPractice);
-
+ 
     console.log(
       `Practice session for day ${day}. Found ${cardsArray.length} cards.`
     );
-
+ 
     const responseData: PracticeSession = {
       cards: cardsArray,
       day: day,
     };
-
+ 
     res.json(responseData);
   } catch (error) {
     console.error("Error in /api/practice:", error);
@@ -99,17 +94,17 @@ app.get("/api/practice", (req: Request, res: Response) => {
     });
   }
 });
-
+ 
 /**
  * POST /api/update
  * Updates a card's bucket number after a practice trial.
  */
 app.post("/api/update", (req: Request, res: Response) => {
   console.log("POST /api/update received");
-
+ 
   try {
     const { cardFront, cardBack, difficulty } = req.body as UpdateRequest;
-
+ 
     // 2. Validate input (Basic Example)
     if (
       !cardFront ||
@@ -125,16 +120,16 @@ app.post("/api/update", (req: Request, res: Response) => {
       return;
     }
     const validDifficulty = difficulty as AnswerDifficulty; // Cast after check
-
+ 
     const card = findCard(cardFront, cardBack);
     if (!card) {
       console.error("Card not found", cardFront, cardBack);
       res.status(404).json({ message: "Flashcard not found" });
       return;
     }
-
+ 
     const buckets = getBuckets();
-
+ 
     const previousBucket = findCardBucket(card);
     if (previousBucket === undefined) {
       // This shouldn't happen if findCard succeeded, but good to check
@@ -144,9 +139,9 @@ app.post("/api/update", (req: Request, res: Response) => {
       });
       return;
     }
-
+ 
     setBuckets(update(buckets, card, validDifficulty));
-
+ 
     const newBucket = findCardBucket(card);
     if (newBucket === undefined) {
       // This might happen if the card was retired or logic is complex
@@ -156,7 +151,7 @@ app.post("/api/update", (req: Request, res: Response) => {
       // Decide how to handle - maybe record as 'retired' or a special value?
       // For now, let's proceed but log it.
     }
-
+ 
     const record: PracticeRecord = {
       cardFront: card.front,
       cardBack: card.back,
@@ -166,7 +161,7 @@ app.post("/api/update", (req: Request, res: Response) => {
       newBucket: newBucket !== undefined ? newBucket : -1,
     };
     addHistoryRecord(record);
-
+ 
     // 10. Log the update details
     console.log(
       `Updated card "${card.front}". Difficulty: ${
@@ -175,7 +170,7 @@ app.post("/api/update", (req: Request, res: Response) => {
         newBucket !== undefined ? newBucket : "?"
       }.`
     );
-
+ 
     // 11. Respond with a success message
     res.status(200).json({ message: "Card updated successfully." });
   } catch (error) {
@@ -185,7 +180,7 @@ app.post("/api/update", (req: Request, res: Response) => {
       .json({ message: "Internal server error during card update." });
   }
 });
-
+ 
 /**
  * GET /api/hint
  * Gets a hint for a specific flashcard.
@@ -195,7 +190,7 @@ app.get("/api/hint", (req: Request, res: Response) => {
   try {
     // 1. Extract card identifiers from query parameters
     const { cardFront, cardBack } = req.query;
-
+ 
     // 2. Validate input
     if (
       typeof cardFront !== "string" ||
@@ -210,7 +205,7 @@ app.get("/api/hint", (req: Request, res: Response) => {
       });
       return;
     }
-
+ 
     // 3. Find the actual Flashcard object
     const card = findCard(cardFront, cardBack);
     if (!card) {
@@ -218,14 +213,14 @@ app.get("/api/hint", (req: Request, res: Response) => {
       res.status(404).json({ message: "Flashcard not found." });
       return;
     }
-
+ 
     const hint = getHint(card);
-
+ 
     // 5. Log the request
     console.log(
       `Hint requested for card "${card.front}". Hint generated: "${hint}"`
     );
-
+ 
     // 6. Respond with the hint
     res.json({ hint: hint });
   } catch (error) {
@@ -235,7 +230,7 @@ app.get("/api/hint", (req: Request, res: Response) => {
       .json({ message: "Internal server error during hint generation." });
   }
 });
-
+ 
 /**
  * GET /api/progress
  * Computes and returns learning progress statistics.
@@ -246,12 +241,12 @@ app.get("/api/progress", (req: Request, res: Response) => {
     // 1. Get current state needed for progress calculation
     const buckets = getBuckets();
     const history = getHistory();
-
+ 
     const stats: ProgressStats = computeProgress(buckets, history);
-
+ 
     // 3. Log calculation
     console.log("Progress stats calculated:", stats);
-
+ 
     // 4. Respond with the computed statistics
     res.json(stats);
   } catch (error) {
@@ -261,7 +256,7 @@ app.get("/api/progress", (req: Request, res: Response) => {
       .json({ message: "Internal server error during progress calculation." });
   }
 });
-
+ 
 /**
  * POST /api/day/next
  * Advances the current learning day by one.
@@ -271,10 +266,10 @@ app.post("/api/day/next", (req: Request, res: Response) => {
   try {
     // 1. Call the state mutator to increment the day
     incrementDay();
-
+ 
     // 2. Get the new day value
     const newDay = getCurrentDay();
-
+ 
     // 4. Respond with success and the new day number
     res
       .status(200)
@@ -286,42 +281,43 @@ app.post("/api/day/next", (req: Request, res: Response) => {
       .json({ message: "Internal server error during day advancement." });
   }
 });
-
-
+ 
 /**
  * POST /api/cards
  * Creates a new flashcard and adds it to Bucket 0.
  */
 app.post("/api/cards", (req: Request, res: Response) => {
   console.log("POST /api/cards received with body:", req.body);
-
+ 
   try {
     // 1. Extract and validate data from the request body
     const { front, back, hint, tags } = req.body as CreateCardRequest;
-
+ 
     // Basic validation: front and back are required
     if (!front || !back) {
       console.error("Validation failed: front or back missing.", req.body);
       res.status(400).json({
         message: "Invalid request body. 'front' and 'back' are required fields.",
       });
+      return; // Added return to prevent execution continuing
     }
-
+ 
     // Check if card already exists
     if (doesCardExist(front, back)) {
       console.warn(`Attempted to create a duplicate card: "${front}"`);
       res.status(409).json({ // 409 Conflict
         message: "A flashcard with this front and back already exists.",
       });
+      return; // Added return to prevent execution continuing
     }
-
+ 
     // Create a new Flashcard instance
     // The Flashcard constructor now handles optional hint/tags with defaults
     const newCard = new Flashcard(front, back, hint, tags);
-
+ 
     // Add the card to the state (Bucket 0)
-    addCard(newCard); 
-
+    addCard(newCard);
+ 
     // Respond with success
     console.log(`Card created successfully: "${newCard.front}"`);
     res.status(201).json({ // 201 Created
@@ -333,7 +329,7 @@ app.post("/api/cards", (req: Request, res: Response) => {
         tags: newCard.tags,
       },
     });
-
+ 
   } catch (error) {
     console.error("Error in POST /api/cards:", error);
     res.status(500).json({
@@ -341,12 +337,56 @@ app.post("/api/cards", (req: Request, res: Response) => {
     });
   }
 });
-
-
+ 
+// --- Shutdown Handler ---
+async function handleShutdown(signal: string): Promise<void> {
+  if (isShuttingDown) {
+    console.log(`[SHUTDOWN] Shutdown already in progress. Ignoring ${signal}.`);
+    return;
+  }
+  isShuttingDown = true;
+  console.log(`[SHUTDOWN] Received ${signal}, saving state...`);
+ 
+  try {
+    const buckets = getBuckets();
+    const history = getHistory();
+    const day = getCurrentDay();
+ 
+    console.log(`[SHUTDOWN] Fetched state. Day: ${day}, Bucket count: ${buckets.size}`);
+ 
+    const serializedState = serializeState(buckets, history, day);
+    console.log(`[SHUTDOWN] State serialized successfully.`);
+ 
+    // Ensure directory exists
+    await fs.mkdir(path.dirname(STATE_FILE_PATH), { recursive: true });
+ 
+    console.log(`[SHUTDOWN] Saving state to file: ${STATE_FILE_PATH}`);
+    await fs.writeFile(STATE_FILE_PATH, JSON.stringify(serializedState, null, 2));
+    console.log(`[SHUTDOWN] State saved to file successfully.`);
+ 
+    // Give time for write to complete
+    await new Promise(resolve => setTimeout(resolve, 200));
+    process.exit(0);
+  } catch (error) {
+    console.error(`[SHUTDOWN] Failed to save state: ${error instanceof Error ? error.message : error}`);
+    process.exit(1);
+  }
+}
+ 
+// Register shutdown handlers
+process.on('SIGINT', () => handleShutdown('SIGINT'));
+process.on('SIGTERM', () => handleShutdown('SIGTERM'));
+ 
 // --- Start Server ---
-// Tell the Express app to start listening for incoming connections on the specified PORT.
-app.listen(PORT, () => {
-  console.log(
-    `Backend server is running and listening on http://localhost:${PORT}`
-  );
-});
+(async () => {
+  try {
+    console.log("Starting backend server...");
+    await initializeState();
+    app.listen(PORT, () => {
+      console.log(`Backend server is running on http://localhost:${PORT}`);
+    });
+  } catch (error) {
+    console.error("Failed to start server:", error instanceof Error ? error.message : error);
+    process.exit(1);
+  }
+})();
