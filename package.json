@@ -1,5 +1,10 @@
 {
   "devDependencies": {
     "@types/jest": "^29.5.14"
+  },
+  "dependencies": {
+    "@tensorflow-models/hand-pose-detection": "^2.0.1",
+    "@tensorflow/tfjs-backend-webgl": "^4.22.0",
+    "@tensorflow/tfjs-core": "^4.22.0"
   }
 }
